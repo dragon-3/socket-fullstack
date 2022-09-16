@@ -19,12 +19,21 @@ const io = new Server(server, {
     }
 })
 
-//listen on connect, join_room, and disconnect
+//listen on connect, join_room, message and disconnect
 io.on("connection", (socket) => {
     console.log("user has connected");
+
     socket.on("join_room", (data) => {
         socket.join(data);
         console.log(`${socket.id} has joined room: ${data}`)
+    });
+
+    socket.on("send_message", (data) => {
+        console.log(data);
+    })
+
+    socket.on("disconnect", () => {
+        console.log(`user:${socket.id} has disconneected`)
     })
 
 })
