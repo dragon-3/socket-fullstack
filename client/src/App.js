@@ -4,11 +4,13 @@ import React, {useState} from 'react'
 import io from "socket.io-client" 
 import Chat from './Chat';
 
+const socket = io.connect("http://localhost:3001")
+
+
 function App() {
 
-  const socket = io.connect("http://localhost:3001")
 
-  const [name, setName] = useState("");
+  const [username, setUserName] = useState("");
   const [room, setRoom] = useState("");
   const [displayChat, setDisplayChat] = useState(false);
 
@@ -27,7 +29,7 @@ function App() {
         <div className="login">
 
           <label htmlFor="">Name:</label>
-          <input type="text" onChange={(e) => setName(e.target.value)}/><br />
+          <input type="text" onChange={(e) => setUserName(e.target.value)}/><br />
 
           <label htmlFor="">Room:</label>
           <input type="text" onChange={(e) => setRoom(e.target.value)}/><br />
@@ -42,7 +44,7 @@ function App() {
       {displayChat ? 
 
         <div className="chat">
-          <Chat socket={socket} name={name} room={room}/>
+          <Chat socket={socket} name={username} room={room}/>
         </div>
 
         : null
