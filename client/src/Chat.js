@@ -1,42 +1,60 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {useState} from 'react'
 
-function Chat({socket, name, room}) {
+function Chat({socket, username, room}) {
 
     const [currentMessage, setCurrentMessage] = useState('');
     const [messageList, setMessageList] = useState([]);
 
-    const sendMessage = () => {
+    
+
+    const sendMessage = async () => {
         if (currentMessage !== "") {
 
             const messageData = {
                 room: room,
-                author: name,
+                author: username,
                 message: currentMessage,
                 time: 
                 new Date(Date.now()).getHours() +
                     ":" +
                 new Date(Date.now()).getMinutes()
-            }
+            };
 
-            socket.emit("send_message", messageData);
-            // setMessageList()
-
+            await socket.emit("send_message", messageData);
+            
+            setMessageList((list) => [...list, messageData]);
+            
+            setCurrentMessage("");
         }
-    }
-    
-    
+    };
 
-
+    useEffect(() => {
+        socket.on("receive_message", (data) => {
+            setMessageList((list) => [...list, data]);
+        });
+    }, [socket]);
+    
     return (
 
         <div>
             <div className="container">
                 <div className="message-history">
-                    
+                    {
+                        messageList.map(
+                            (messages) => (
+                                <div className="messages" id={username === messages.author ? "you" : "other"}>
+                                    <tr key={messages.id}>
+                                        <td>{messages.message}</td>
+                                    </tr>
+                                </div>
+                                
+                            )
+                        )
+                    }
                 </div>
-                <div className="text">
-                    <input type="text" placeholder='text'onChange={(e) => setCurrentMessage(e.target.value)} />
+                <div className="chat_footer">
+                    <input type="text" value={currentMessage} onChange={(e) => setCurrentMessage(e.target.value)} />
                     <button onClick={sendMessage}>SEND</button>
                 </div>
             </div>
