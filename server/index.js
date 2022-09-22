@@ -20,25 +20,22 @@ const io = new Server(server, {
 
 //listen on connect, join_room, message and disconnect
 io.on("connection", (socket) => {
-    console.log("user has connected");
-
+    console.log(`User Connected: ${socket.id}`);
+  
     socket.on("join_room", (data) => {
-        socket.join(data);
-        console.log(`${socket.id} has joined room: ${data}`)
+      socket.join(data);
+      console.log(`User with ID: ${socket.id} joined room: ${data}`);
     });
-
+  
     socket.on("send_message", (data) => {
-        // console.log(data);
-        socket.to(data.room).emit("receive_message", data);
-    })
-
+      socket.to(data.room).emit("receive_message", data);
+    });
+  
     socket.on("disconnect", () => {
-        console.log(`user:${socket.id} has disconneected`)
-    })
-
-})
-
-//listen to server on port 3001
-server.listen(3001, () => {
-    console.log("SERVER ON PORT 3001");
-})
+      console.log("User Disconnected", socket.id);
+    });
+  });
+  
+  server.listen(3001, () => {
+    console.log("SERVER RUNNING");
+  });

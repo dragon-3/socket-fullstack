@@ -43,9 +43,9 @@ function App() {
 
       {displayChat ? 
 
-        <div className="chat">
-          <Chat socket={socket} name={username} room={room}/>
-        </div>
+        (<div className="chat">
+          <Chat socket={socket} username={username} room={room}/>
+        </div>)
 
         : null
       
